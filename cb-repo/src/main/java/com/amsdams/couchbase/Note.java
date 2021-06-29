@@ -1,11 +1,6 @@
 package com.amsdams.couchbase;
 
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Version;
 import org.springframework.data.couchbase.core.index.CompositeQueryIndex;
 import org.springframework.data.couchbase.core.index.QueryIndexed;
 import org.springframework.data.couchbase.core.mapping.CouchbaseDocument;
@@ -32,9 +27,9 @@ public class Note {
     private String id;
 	@Field
 	@QueryIndexed
-	@Getter
+	@JsonInclude(content = Include.ALWAYS)
 	private CouchbaseDocument json;
-	
+	/*
 	@CreatedBy private String creator;
 
 	@LastModifiedBy private String lastModifiedBy;
@@ -44,5 +39,6 @@ public class Note {
 	@CreatedDate private long creationDate;
 
 	@Version private long version;
+	*/
 	
 }
