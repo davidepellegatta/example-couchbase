@@ -5,13 +5,13 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-  <module>cb-repo</module>
-  <module>cb-template</module>
+  <!-- <module>cb-template</module>-->
+  <!--<module>m-template</module>-->
+
+  <!-- <module>couchflix-main</module> -->
   <module>m-repo</module>
-  <module>m-template</module>
 
-  <module>couchflix-main</module>
-
+  <module>cb-repo</module>
 
   </modules>
 </project>
