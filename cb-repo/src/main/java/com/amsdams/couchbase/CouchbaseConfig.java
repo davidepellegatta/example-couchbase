@@ -2,9 +2,10 @@ package com.amsdams.couchbase;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
+
 @Configuration
-public class CouchbaseConfig extends AbstractCouchbaseConfiguration{
-	//clusterName
+public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
+	// clusterName
 	@Override
 	public String getConnectionString() {
 		// TODO Auto-generated method stub
@@ -28,8 +29,7 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration{
 		// TODO Auto-generated method stub
 		return "bucketName";
 	}
-	
-	
+
 	@Override
 	protected boolean autoIndexCreation() {
 		// TODO Auto-generated method stub

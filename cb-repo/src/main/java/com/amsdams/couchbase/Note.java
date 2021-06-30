@@ -1,6 +1,8 @@
 package com.amsdams.couchbase;
 
-import org.springframework.data.annotation.AccessType;
+import java.util.Map;
+
+import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.core.index.CompositeQueryIndex;
 import org.springframework.data.couchbase.core.index.QueryIndexed;
@@ -9,46 +11,59 @@ import org.springframework.data.couchbase.core.mapping.Field;
 import org.springframework.data.couchbase.core.mapping.id.GeneratedValue;
 import org.springframework.data.couchbase.core.mapping.id.GenerationStrategy;
 
-import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonInclude;
-import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.couchbase.client.java.json.JsonObject;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-
+import lombok.extern.slf4j.Slf4j;
 
 @Document
 @Data
-@JsonInclude(content = Include.ALWAYS)
-@CompositeQueryIndex(fields = {"id", "json"})
+@CompositeQueryIndex(fields = { "id", "json" })
 @With
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class Note {
-	
 
-	
-	@Id @GeneratedValue(strategy = GenerationStrategy.UNIQUE)
-	//@Field
-	//@QueryIndexed
-    private String id;
+	@Id
+	@GeneratedValue(strategy = GenerationStrategy.UNIQUE)
+	// @Field
+	// @QueryIndexed
+	private String id;
 	@Field
 	@QueryIndexed
-	@JsonInclude(content = Include.ALWAYS)
-	@AccessType(AccessType.Type.PROPERTY)
-	private JsonObject json;
+
+	private Map<String, Object> json;
 	/*
-	@CreatedBy private String creator;
+	 * @CreatedBy private String creator;
+	 * 
+	 * @LastModifiedBy private String lastModifiedBy;
+	 * 
+	 * @LastModifiedDate private long lastModification;
+	 * 
+	 * @CreatedDate private long creationDate;
+	 * 
+	 * @Version private long version;
+	 */
 
-	@LastModifiedBy private String lastModifiedBy;
+	public Map<String, Object> getJson() {
+		Map<String, Object> map = json;
+		log.info("map {}", map.toString());
 
-	@LastModifiedDate private long lastModification;
+		JSONObject obj = new JSONObject(this.json);
+		log.info("json {}", obj.toString());
+		ObjectMapper oMapper = new ObjectMapper();
+		oMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		Map<String, Object> mapped = oMapper.convertValue(json, new TypeReference<Map<String, Object>>() {
+		});
+		log.info("mapped {}", mapped.toString());
 
-	@CreatedDate private long creationDate;
+		return json;
+	}
 
-	@Version private long version;
-	*/
-	
 }
