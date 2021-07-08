@@ -43,7 +43,7 @@ class CbTemplateApplicationTests {
 		log.info(String.format("toSave %s", toSave.toString()));
 		log.info(String.format("saved %s", saved.toString()));
 
-		Assertions.assertTrue(toSave.equals(saved));
+		Assertions.assertEquals(toSave, saved);
 
 	}
 
