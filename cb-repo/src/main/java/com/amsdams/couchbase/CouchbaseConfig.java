@@ -15,19 +15,19 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
 	@Override
 	public String getUserName() {
 		// TODO Auto-generated method stub
-		return "adminUserName";
+		return "Administrator";
 	}
 
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return "password";
+		return "couchbase";
 	}
 
 	@Override
 	public String getBucketName() {
 		// TODO Auto-generated method stub
-		return "bucketName";
+		return "test";
 	}
 
 	@Override

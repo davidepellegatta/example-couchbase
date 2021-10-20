@@ -7,11 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<!-- <module>couchflix-main</module> -->
-		<module>m-repo</module>
-		<module>m-template</module>
-
 		<module>cb-repo</module>
-		<module>cb-template</module>
-	</modules>
+        <module>extractor</module>
+    </modules>
 </project>
