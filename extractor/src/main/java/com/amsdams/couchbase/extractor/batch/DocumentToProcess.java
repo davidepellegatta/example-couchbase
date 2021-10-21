@@ -1,6 +1,4 @@
-package com.amsdams.couchbase.extractor;
-
-import com.couchbase.client.java.document.json.JsonObject;
+package com.amsdams.couchbase.extractor.batch;
 
 public class DocumentToProcess {
 

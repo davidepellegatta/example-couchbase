@@ -1,4 +1,4 @@
-package com.amsdams.couchbase.extractor;
+package com.amsdams.couchbase.extractor.batch;
 
 import com.couchbase.client.java.Bucket;
 

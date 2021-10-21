@@ -1,4 +1,4 @@
-package creator;
+package com.amsdams.couchbase.extractor.importer;
 
 import com.couchbase.client.java.AsyncBucket;
 import com.couchbase.client.java.Cluster;

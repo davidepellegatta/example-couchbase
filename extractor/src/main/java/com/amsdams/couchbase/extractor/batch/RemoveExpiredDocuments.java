@@ -1,4 +1,4 @@
-package com.amsdams.couchbase.extractor;
+package com.amsdams.couchbase.extractor.batch;
 
 import com.couchbase.client.dcp.Client;
 import com.couchbase.client.dcp.StreamFrom;
@@ -8,7 +8,6 @@ import com.couchbase.client.dcp.message.DcpDeletionMessage;
 import com.couchbase.client.dcp.message.DcpExpirationMessage;
 import com.couchbase.client.dcp.message.DcpMutationMessage;
 import com.couchbase.client.dcp.message.DcpSnapshotMarkerRequest;
-import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.DeserializationFeature;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.java.Bucket;
