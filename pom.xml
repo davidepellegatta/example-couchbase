@@ -9,6 +9,6 @@
 	<modules>
 		<module>cb-repo</module>
         <module>extractor</module>
-		<module>wcc.perkeso</module>
+		<module>importer</module>
 	</modules>
 </project>
