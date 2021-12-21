@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class ImportDocumentsToDelete {
 
@@ -27,6 +28,7 @@ public class ImportDocumentsToDelete {
     Option option_p = Option.builder("p").argName("password").hasArg().desc("couchbase password").build();
     Option option_b = Option.builder("b").argName("bucket").hasArg().desc("couchbase bucket").build();
     Option option_docs = Option.builder("n").argName("num-of-docs").hasArg().desc("docs to create").build();
+    Option option_buffer = Option.builder("x").argName("buffer").hasArg().desc("batch buffer").build();
     Options options = new Options();
     CommandLineParser parser = new DefaultParser();
 
@@ -35,6 +37,7 @@ public class ImportDocumentsToDelete {
     options.addOption(option_p);
     options.addOption(option_docs);
     options.addOption(option_b);
+    options.addOption(option_buffer);
 
     String header = "               [<arg1> [<arg2> [<arg3> ...\n       Options, flags and arguments may be in any order";
     HelpFormatter formatter = new HelpFormatter();
@@ -44,6 +47,7 @@ public class ImportDocumentsToDelete {
     String password = "couchbase";
     String ip = "127.0.0.1";
     String bucketName = "poc";
+    int buffer = 100;
     int docs = 1_000_000;
 
     try
@@ -78,6 +82,11 @@ public class ImportDocumentsToDelete {
         System.out.println(String.format("couchbase bucket: %s", commandLine.getOptionValue("b")));
         bucketName = commandLine.getOptionValue("b");
       }
+      if (commandLine.hasOption("x"))
+      {
+        System.out.println(String.format("batch buffer: %s", commandLine.getOptionValue("x")));
+        buffer = Integer.parseInt(commandLine.getOptionValue("x"));
+      }
 
     }
     catch (ParseException exception)
@@ -105,24 +114,27 @@ public class ImportDocumentsToDelete {
     // Insert them in one batch, waiting until the last one is done.
     Observable
         .range(1, docs)
-        .map( count -> {
-          JsonObject content = JsonObject.create()
-              .put("counter", count)
-              .put("_class", "test_class")
-              .put("type","notification")
-              .put("creationDate", String.format("%s[UTC]", ISO8601_DATE_FORMAT.format(between(twoYearsAgo, nowDate))));
-          return JsonDocument.create(UUID.randomUUID().toString(), content);
-        })
-        .flatMap(doc -> bucket.insert(doc)
-            .retryWhen(RetryBuilder
-                .anyOf(BackpressureException.class)
-                .delay(Delay.exponential(TimeUnit.MILLISECONDS, 100))
-                .max(10)
-                .build()))
-        .last()
-        .toBlocking()
-        .single();
+        .buffer(buffer)
+        .subscribe( n -> Observable.from(n)
+            .map( count -> {
+              JsonObject content = JsonObject.create()
+                  .put("counter", count)
+                  .put("_class", "test_class")
+                  .put("type","notification")
+                  .put("creationDate", String.format("%s[UTC]", ISO8601_DATE_FORMAT.format(between(twoYearsAgo, nowDate))));
+              return JsonDocument.create(UUID.randomUUID().toString(), content);
+            })
+                .flatMap(doc -> bucket.insert(doc)
+                    .retryWhen(RetryBuilder
+                        .anyOf(BackpressureException.class, TimeoutException.class)
+                        .delay(Delay.exponential(TimeUnit.MILLISECONDS, 500))
+                        .max(10)
+                        .build()))
+                .last()
+                .toBlocking()
+                .single());
   }
+
 
   public static Date between(Date startInclusive, Date endExclusive) {
     long startMillis = startInclusive.getTime();
