@@ -7,6 +7,7 @@ import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
+import com.couchbase.client.java.error.TemporaryFailureException;
 import com.couchbase.client.java.util.retry.RetryBuilder;
 import org.apache.commons.cli.*;
 import rx.Observable;
@@ -126,8 +127,8 @@ public class ImportDocumentsToDelete {
             })
                 .flatMap(doc -> bucket.insert(doc)
                     .retryWhen(RetryBuilder
-                        .anyOf(BackpressureException.class, TimeoutException.class)
-                        .delay(Delay.exponential(TimeUnit.MILLISECONDS, 500))
+                        .anyOf(BackpressureException.class, TimeoutException.class, TemporaryFailureException.class)
+                        .delay(Delay.exponential(TimeUnit.MILLISECONDS, 1000))
                         .max(10)
                         .build()))
                 .last()
